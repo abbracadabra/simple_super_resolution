@@ -1,2 +1,1 @@
-# simple_super_resolution
-implementing super resolution with feature loss
+# <a href='https://arxiv.org/pdf/1603.08155.pdf'>original paper<a>
