@@ -19,8 +19,8 @@ def gendata():
         i2s = i2.filter(ImageFilter.BLUR).resize((100, 100))
         i3s = i3.filter(ImageFilter.BLUR).resize((100, 100))
         i4s = i4.filter(ImageFilter.BLUR).resize((100, 100))
-        hrs  = np.float32([i1,i2,i3,i4])/255.
-        lrs = np.float32([i1s,i2s,i3s,i4s])/255.
+        hrs  = np.array([np.array(i1),np.array(i2),np.array(i3),np.array(i4)])/255.
+        lrs = np.array([np.array(i1s),np.array(i2s),np.array(i3s),np.array(i4s)])/255.
         yield hrs,lrs
 
 

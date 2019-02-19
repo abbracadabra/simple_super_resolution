@@ -8,10 +8,11 @@ class transformnet:
     def __init__(self,input):
         with tf.variable_scope('gnet'):
             self.input = input
-            tmp = self.buildresblock(self.input, 64)
+            tmp = self.buildconv(self.input, 64, 3)
             tmp = self.buildresblock(tmp, 64)
             tmp = self.buildresblock(tmp, 64)
-            tmp = self.buildupsample(tmp)
+            tmp = self.buildresblock(tmp, 64)
+            tmp = self.buildupsample(tmp, 64)
             tmp = self.buildconv(tmp, 3, 1, activation=tf.nn.sigmoid)
             self.output = tmp
     def buildresblock(self,input,filters):
