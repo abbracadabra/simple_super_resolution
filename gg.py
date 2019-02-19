@@ -5,4 +5,10 @@ import PIL.Image as Image
 import PIL.ImageFilter as ImageFilter
 import tensorflow as tf
 
-tf.layers.Dense()
+def gg():
+    for i in range(5):
+        yield 5
+        print(i)
+
+for i in gg():
+    pass

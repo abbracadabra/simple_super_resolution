@@ -21,8 +21,9 @@ dnetops = tf.train.AdamOptimizer(learning_rate=0.001).minimize(dnet_loss,var_lis
 class Trainer:
     def __init__(self):
         self.sess = tf.Session()
-        self.sess.run(tf.global_variables_initializer())
         self.saver = tf.train.Saver()
+        #self.sess.run(tf.global_variables_initializer())
+        self.saver.restore(self.sess,modelpath)
         self.rec = []
         self.minloss = 999999999
         self.minpos = -1

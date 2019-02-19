@@ -11,6 +11,9 @@ def gendata():
     while cursor < len(flist):
         im = Image.open(os.path.join(traindir, flist[cursor]))
         w, h = im.size
+        if w<200 or h <200:
+            cursor += 1
+            continue
         i1 = im.crop((0,0,200,200))
         i2 = im.crop((w-200, 0, w, 200))
         i3 = im.crop((w - 200, h-200, w, h))
@@ -22,6 +25,7 @@ def gendata():
         hrs  = np.array([np.array(i1),np.array(i2),np.array(i3),np.array(i4)])/255.
         lrs = np.array([np.array(i1s),np.array(i2s),np.array(i3s),np.array(i4s)])/255.
         yield hrs,lrs
+        cursor += 1
 
 
 
