@@ -35,6 +35,7 @@ class Trainer:
                 _, dlossval = self.sess.run([dnetops, dnet_loss], feed_dict={sr: mixims, flag: flgs})
                 self.callback()
     def callback(self):
+        print(self.glossval)
         if len(self.rec) - self.minpos > 50:
             raise Exception("performance not improving")
         self.rec.append(self.glossval)
