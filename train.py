@@ -33,8 +33,9 @@ class Trainer:
                 mixims = np.concatenate((hrs, fakeimgs))
                 flgs = np.array([1] * len(hrs) + [0] * len(fakeimgs))
                 _, dlossval = self.sess.run([dnetops, dnet_loss], feed_dict={sr: mixims, flag: flgs})
-                self.callback()
-    def callback(self):
+                self.savebest()
+                self.preview()
+    def savebest(self):
         print(self.glossval)
         if len(self.rec) - self.minpos > 50:
             raise Exception("performance not improving")
@@ -44,7 +45,15 @@ class Trainer:
             self.minpos = len(self.rec) - 1
             if len(self.rec) % 20:
                 self.saver.save(self.sess, config.modelpath)
-
+    def preview(self):
+        flist = os.listdir(testdir)
+        fn = np.random.choice(flist)
+        fp = os.path.join(testdir,fn)
+        im = Image.open(fp)
+        im = np.float32([im]) / 255.
+        fakeim = self.sess.run(sr,feed_dict={lr:im})
+        im = Image.fromarray(fakeim)
+        im.save(os.path.join(outtestdir,fn))
 
 if __name__ == '__main__':
     Trainer().train()

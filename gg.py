@@ -1,9 +1,10 @@
-import tensorflow as tf
 import numpy as np
+from config import *
+import os
+import PIL.Image as Image
+import PIL.ImageFilter as ImageFilter
 
-with tf.variable_scope("ssx"):
-    aa = tf.placeholder(dtype=tf.float32,shape=[None,10,10,3])
-    bb = tf.layers.conv2d(aa,3,3)
-    cc = tf.layers.conv2d(bb, 3, 3)
+im = Image.open(r"D:\Users\yl_gong\Desktop\dl\voc\VOCtest_06-Nov-2007\VOCdevkit\VOC2007\JPEGImages\000015.jpg")
+imm = im.filter(ImageFilter.BLUR)
+imm.save(r"D:\Users\yl_gong\Desktop\wwww.jpg")
 
-print(tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='sxsx'))
