@@ -4,16 +4,17 @@ import config
 
 class discriminatenet:
     def __init__(self,input):
-        self.input = input
-        tmp = self.buildconv(input,64,1)
-        tmp = self.buildconv(tmp,64,1)
-        tmp = self.buildconv(tmp, 128, 2)
-        tmp = self.buildconv(tmp, 128, 1)
-        tmp = self.buildconv(tmp, 256, 2)
-        tmp = self.buildconv(tmp, 256, 1)
-        tmp = tf.layers.flatten(tmp)
-        tmp = tf.layers.Dense(units=1,activation=tf.nn.sigmoid)
-        self.output = tmp
+        with tf.variable_scope('dnet'):
+            self.input = input
+            tmp = self.buildconv(input, 64, 1)
+            tmp = self.buildconv(tmp, 64, 1)
+            tmp = self.buildconv(tmp, 128, 2)
+            tmp = self.buildconv(tmp, 128, 1)
+            tmp = self.buildconv(tmp, 256, 2)
+            tmp = self.buildconv(tmp, 256, 1)
+            tmp = tf.layers.flatten(tmp)
+            tmp = tf.layers.Dense(units=1, activation=tf.nn.sigmoid)
+            self.output = tmp
     def buildconv(self,input,filters,stride):
         tmp = tf.layers.conv2d(input, filters, 3, stride, padding='SAME', use_bias=False)
         tmp = tf.layers.batch_normalization(tmp)
