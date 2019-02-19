@@ -6,4 +6,4 @@
 - <a href='https://medium.com/idealo-tech-blog/a-deep-learning-based-magnifying-glass-dae1f565c359'>A Deep Learning based magnifying glass</a>
 
 ## detail
-- employ pixel loss and gan loss.
+- Employed pixel loss and GAN loss.Didn't include high level feature in loss function as suggested by paper.
