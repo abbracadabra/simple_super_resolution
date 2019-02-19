@@ -13,7 +13,7 @@ prob = dnet.output
 flag = tf.placeholder(dtype=tf.float32,shape=[None])#0:fake 1:real
 dnet_loss = flag*(1-prob)**2 + (1-flag)(prob-0)**2
 gan_loss = (1-prob)**2
-pixel_loss = (sr-hr)**2/tf.size(hr)
+pixel_loss = tf.reduce_mean((sr-hr)**2)
 gnet_loss = pixel_loss + gan_loss
 gnetops = tf.train.AdamOptimizer(learning_rate=0.001).minimize(gnet_loss,tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='gnet'))
 dnetops = tf.train.AdamOptimizer(learning_rate=0.001).minimize(dnet_loss,tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='dnet'))
