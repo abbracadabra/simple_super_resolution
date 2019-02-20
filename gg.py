@@ -4,11 +4,17 @@ import os
 import PIL.Image as Image
 import PIL.ImageFilter as ImageFilter
 import tensorflow as tf
+from train import *
 
-def gg():
-    for i in range(5):
-        yield 5
-        print(i)
+im = Image.open(r'D:\githubrepo\simple_super_resolution\outtestimages\wwww.jpg')
+im = im.resize((200,200))
+im = np.array(im)/255.
+im = np.array([im])
 
-for i in gg():
-    pass
+saver = tf.train.Saver()
+sess = tf.Session()
+saver.restore(sess,modelpath)
+pp = sess.run(prob,feed_dict={sr:im})
+print(pp)
+
+
