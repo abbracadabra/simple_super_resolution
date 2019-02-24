@@ -14,6 +14,7 @@ class discriminatenet:
             tmp = self.buildconv(tmp, 256, 1)
             tmp = tf.layers.flatten(tmp)
             tmp = tf.layers.dense(tmp,units=1, activation=tf.nn.sigmoid)
+            tmp = tf.squeeze(tmp)
             self.output = tmp
     def buildconv(self,input,filters,stride):
         tmp = tf.layers.conv2d(input, filters, 3, stride, padding='SAME', use_bias=False)

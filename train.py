@@ -13,15 +13,18 @@ dnet = discriminatenet(sr)
 prob = dnet.output
 flag = tf.placeholder(dtype=tf.float32,shape=[None])#0:fake 1:real
 dnet_loss = tf.reduce_mean(flag*(1-prob)**2 + (1-flag)*(prob-0)**2)
-gan_loss = tf.reduce_mean((1-prob)**2)
+d_loss = tf.reduce_mean((1-prob)**2)
 pixel_loss = tf.reduce_mean((sr-hr)**2)
-gnet_loss = pixel_loss + gan_loss
-gnetops = tf.train.AdamOptimizer(learning_rate=0.001).minimize(gnet_loss,var_list=tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='gnet'))
-dnetops = tf.train.AdamOptimizer(learning_rate=0.001).minimize(dnet_loss,var_list=tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='dnet'))
+gnet_loss = pixel_loss + d_loss
+gnetupdate = tf.train.AdamOptimizer(learning_rate=0.001).minimize(gnet_loss,var_list=tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='gnet'))
+dnetupdate = tf.train.AdamOptimizer(learning_rate=0.001).minimize(dnet_loss,var_list=tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,scope='dnet'))
+
+vg = tf.get_default_graph().get_tensor_by_name("gnet/conv2d_1/kernel:0")
+vd = tf.get_default_graph().get_tensor_by_name("dnet/conv2d_3/kernel:0")
 
 with tf.variable_scope('gnet'):
     tf.summary.scalar('pixel_loss', pixel_loss)
-    tf.summary.scalar('gan_loss', gan_loss)
+    tf.summary.scalar('d_loss', d_loss)
     tf.summary.scalar('gnet_loss', gnet_loss)
 with tf.variable_scope('dnet'):
     tf.summary.histogram('prob', prob)
@@ -42,12 +45,12 @@ class Trainer:
     def train(self):
         for i in range(config.epochs):
             for i,(hrs, lrs) in enumerate(gendata()):
-                _, self.glossval, fakeimgs, log1 = self.sess.run([gnetops, gnet_loss, sr, log_gnet], feed_dict={hr: hrs, lr: lrs})
+                _, self.glossval, fakeimgs, log1 = self.sess.run([gnetupdate, gnet_loss, sr, log_gnet], feed_dict={hr: hrs, lr: lrs})
                 mixims = np.concatenate((hrs, fakeimgs))
                 flgs = np.array([1] * len(hrs) + [0] * len(fakeimgs))
-                _, dlossval, log2 = self.sess.run([dnetops, dnet_loss, log_dnet], feed_dict={sr: mixims, flag: flgs})
-                writer.add_summary(log1)
-                writer.add_summary(log2)
+                _, dlossval, log2 = self.sess.run([dnetupdate, dnet_loss, log_dnet], feed_dict={sr: mixims, flag: flgs})
+                writer.add_summary(log1,i)
+                writer.add_summary(log2,i)
                 self.savebest()
                 self.preview()
     def savebest(self):
@@ -61,7 +64,7 @@ class Trainer:
             if len(self.rec)%1 ==0:
                 self.saver.save(self.sess, config.modelpath)
     def preview(self):
-        if len(self.rec)%1==0:
+        if len(self.rec)%5==0:
             flist = os.listdir(testdir)
             fn = np.random.choice(flist)
             fp = os.path.join(testdir, fn)
