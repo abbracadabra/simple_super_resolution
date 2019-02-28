@@ -1,0 +1,2 @@
+model_checkpoint_path: "D:\\githubrepo\\simple_super_resolution\\mdl\\srgan"
+all_model_checkpoint_paths: "D:\\githubrepo\\simple_super_resolution\\mdl\\srgan"
